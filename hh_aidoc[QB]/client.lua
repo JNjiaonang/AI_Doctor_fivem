@@ -14,19 +14,19 @@ RegisterCommand("help", function(source, args, raw)
 			if EMSOnline <= Config.Doctor and hasEnoughMoney and spam then
 				SpawnVehicle(GetEntityCoords(PlayerPedId()))
 				TriggerServerEvent('hhfw:charge')
-				Notify("Medic is arriving")
+				Notify("医生来了")
 			else
 				if EMSOnline > Config.Doctor then
-					Notify("There is too many medics online", "error")
+					Notify("现在有值班的医生", "error")
 				elseif not hasEnoughMoney then
-					Notify("Not Enough Money", "error")
+					Notify("没有足够的钱", "error")
 				else
-					Notify("Wait Paramadic is on its Way", "primary")
+					Notify("请等待，医护单位正在路上", "primary")
 				end	
 			end
 		end)
 	else
-		Notify("This can only be used when dead", "error")
+		Notify("这只能在死亡时使用", "error")
 	end
 end)
 
@@ -55,6 +55,8 @@ function SpawnVehicle(x, y, z)
 		SetEntityAsMissionEntity(mechVeh, true, true)
 		SetVehicleEngineOn(mechVeh, true, true, false)
         
+        SetVehicleSiren(mechVeh, true) 
+		
         mechPed = CreatePedInsideVehicle(mechVeh, 26, GetHashKey('s_m_m_doctor_01'), -1, true, false)              	
         
         mechBlip = AddBlipForEntity(mechVeh)                                                        	
@@ -102,7 +104,7 @@ function DoctorNPC()
 	end
 
 	TaskPlayAnim(test1, "mini@cpr@char_a@cpr_str","cpr_pumpchest",1.0, 1.0, -1, 9, 1.0, 0, 0, 0)
-	QBCore.Functions.Progressbar("revive_doc", "The doctor is giving you medical aid", Config.ReviveTime, false, false, {
+	QBCore.Functions.Progressbar("revive_doc", "医生正在为您提供医疗救助", Config.ReviveTime, false, false, {
 		disableMovement = false,
 		disableCarMovement = false,
 		disableMouse = false,
@@ -112,7 +114,7 @@ function DoctorNPC()
 		Citizen.Wait(500)
         	TriggerEvent("hospital:client:Revive")
 		StopScreenEffect('DeathFailOut')	
-		Notify("Your treatment is done, you were charged: "..Config.Price, "success")
+		Notify("你的治疗结束了，同时被收费了: "..Config.Price, "success")
 		RemovePedElegantly(test1)
 		DeleteEntity(test)
 		Wait(5000)
